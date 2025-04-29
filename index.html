@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Movie Recommender</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f0f2f5;
+    }
+    h1 {
+      color: #333;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #movieList {
+      margin-top: 20px;
+    }
+    .movie-item {
+      background: white;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>🎬 Movie Recommendation System</h1>
+  <label for="genreSelect">Choose Genre:</label>
+  <select id="genreSelect">
+    <option value="Sci-Fi">Sci-Fi</option>
+    <option value="Romance">Romance</option>
+    <option value="Action">Action</option>
+  </select>
+  <button id="recommendBtn">Recommend Movies</button>
+
+  <div id="movieList"></div>
+
+  <script>
+    // JavaScript Object: Movie Database
+    const movies = [
+      { title: "Inception", genre: "Sci-Fi" },
+      { title: "Interstellar", genre: "Sci-Fi" },
+      { title: "The Notebook", genre: "Romance" },
+      { title: "Titanic", genre: "Romance" },
+      { title: "John Wick", genre: "Action" },
+      { title: "Mad Max", genre: "Action" },
+    ];
+
+    // Event Listener on Button
+    document.getElementById("recommendBtn").addEventListener("click", function () {
+      const selectedGenre = document.getElementById("genreSelect").value;
+      const listDiv = document.getElementById("movieList");
+      listDiv.innerHTML = "";
+
+      const recommendations = movies.filter(movie => movie.genre === selectedGenre);
+
+      if (recommendations.length === 0) {
+        listDiv.innerHTML = "<p>No movies found for this genre.</p>";
+      } else {
+        recommendations.forEach(movie => {
+          const div = document.createElement("div");
+          div.className = "movie-item";
+          div.textContent = movie.title;
+          listDiv.appendChild(div);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
