@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Movie Recommender - Subscription Plans</title>
+  <style>
+    :root {
+      --bg-color: #0f0f1a;
+      --text-color: #fff;
+      --card-bg: #1c1c2e;
+      --button-bg: #007bff;
+      --accent-color: #ff4500;
+      --menu-bg: #222;
+      --basic-color: #6c63ff;
+      --standard-color: #ff6b6b;
+      --premium-color: #ffb74d;
+      --card-shadow: rgba(0, 0, 0, 0.3);
+      --border-radius: 12px;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--menu-bg);
+      padding: 15px 30px;
+      position: relative;
+      z-index: 1001;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .left-section {
+      display: flex;
+      align-items: center;
+    }
+
+    .right-section {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 25px;
+    }
+
+    .nav-links a {
+      color: var(--text-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent-color);
+    }
+
+    .menu-toggle, .theme-toggle {
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+    }
+
+    .profile-icon {
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .hero-section {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .hero-title {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      background: linear-gradient(90deg, #6c63ff, #ff6b6b, #ffb74d);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradient 8s ease infinite;
+      background-size: 200% 200%;
+    }
+
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .hero-subtitle {
+      font-size: 1.3rem;
+      color: #ccc;
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .plans-container {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      margin-bottom: 60px;
+    }
+
+    .plan-card {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: 0 10px 20px var(--card-shadow);
+      padding: 30px;
+      width: 300px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .plan-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px var(--card-shadow);
+    }
+
+    .plan-card.popular {
+      border: 2px solid var(--standard-color);
+      transform: scale(1.05);
+    }
+
+    .popular-badge {
+      position: absolute;
+      top: 20px;
+      right: -35px;
+      background: var(--standard-color);
+      color: white;
+      padding: 8px 40px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      transform: rotate(45deg);
+    }
+
+    .plan-header {
+      text-align: center;
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .plan-name {
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .plan-price {
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+
+    .plan-price .currency {
+      font-size: 1.5rem;
+      vertical-align: super;
+    }
+
+    .plan-price .period {
+      font-size: 1rem;
+      color: #ccc;
+      font-weight: normal;
+    }
+
+    .plan-features {
+      margin-bottom: 30px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 15px;
+    }
+
+    .feature-icon {
+      margin-right: 12px;
+      font-size: 1.2rem;
+      color: #6c63ff;
+    }
+
+    .feature-text {
+      flex: 1;
+      line-height: 1.4;
+    }
+
+    .plan-button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .plan-button:hover {
+      transform: translateY(-3px);
+    }
+
+    .plan-button:active {
+      transform: translateY(0);
+    }
+
+    .basic .plan-name {
+      color: var(--basic-color);
+    }
+
+    .standard .plan-name {
+      color: var(--standard-color);
+    }
+
+    .premium .plan-name {
+      color: var(--premium-color);
+    }
+
+    .basic .plan-button {
+      background-color: var(--basic-color);
+      color: white;
+    }
+
+    .standard .plan-button {
+      background-color: var(--standard-color);
+      color: white;
+    }
+
+    .premium .plan-button {
+      background-color: var(--premium-color);
+      color: black;
+    }
+
+    .comparison-section {
+      margin-top: 80px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: var(--border-radius);
+      padding: 40px;
+    }
+
+    .comparison-title {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 2rem;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+    }
+
+    .comparison-table th, .comparison-table td {
+      padding: 15px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .comparison-table th {
+      color: #ccc;
+      font-weight: normal;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    .comparison-table th:first-child {
+      text-align: left;
+    }
+
+    .comparison-table td:first-child {
+      text-align: left;
+      font-weight: 500;
+    }
+
+    .yes-icon {
+      color: #4CAF50;
+      font-size: 1.2rem;
+    }
+
+    .no-icon {
+      color: #F44336;
+      font-size: 1.2rem;
+    }
+
+    .basic-header {
+      color: var(--basic-color);
+    }
+
+    .standard-header {
+      color: var(--standard-color);
+    }
+
+    .premium-header {
+      color: var(--premium-color);
+    }
+
+    .faq-section {
+      margin-top: 80px;
+    }
+
+    .faq-title {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 2rem;
+    }
+
+    .faq-item {
+      margin-bottom: 20px;
+      border-radius: var(--border-radius);
+      background-color: var(--card-bg);
+      overflow: hidden;
+    }
+
+    .faq-question {
+      padding: 20px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .faq-answer {
+      padding: 0 20px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      color: #ccc;
+      line-height: 1.6;
+    }
+
+    .faq-item.active .faq-answer {
+      padding: 0 20px 20px;
+      max-height: 300px;
+    }
+
+    .faq-toggle {
+      transition: transform 0.3s;
+    }
+
+    .faq-item.active .faq-toggle {
+      transform: rotate(45deg);
+    }
+
+    .testimonials {
+      margin-top: 80px;
+      padding: 40px 0;
+    }
+
+    .testimonial-title {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 2rem;
+    }
+
+    .testimonial-container {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .testimonial-card {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 30px;
+      width: 300px;
+      position: relative;
+    }
+
+    .testimonial-text {
+      color: #ccc;
+      font-style: italic;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+    }
+
+    .author-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 15px;
+      background-color: #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--card-bg);
+    }
+
+    .author-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .author-name {
+      font-weight: 600;
+    }
+
+    .author-title {
+      font-size: 0.9rem;
+      color: #999;
+    }
+
+    .quote-icon {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 40px;
+      opacity: 0.1;
+    }
+
+    .cta-section {
+      text-align: center;
+      margin: 80px 0 40px;
+      padding: 60px 20px;
+      background: linear-gradient(45deg, rgba(108, 99, 255, 0.2), rgba(255, 107, 107, 0.2));
+      border-radius: var(--border-radius);
+    }
+
+    .cta-title {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .cta-subtitle {
+      color: #ccc;
+      max-width: 600px;
+      margin: 0 auto 30px;
+      line-height: 1.6;
+    }
+
+    .cta-button {
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.3s, background-color 0.3s;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-5px);
+      background-color: #ff5a1f;
+    }
+
+    footer {
+      background-color: var(--menu-bg);
+      padding: 40px 20px;
+      margin-top: 80px;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .footer-column {
+      width: 250px;
+      margin-bottom: 30px;
+    }
+
+    .footer-column h3 {
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer-links li {
+      margin-bottom: 10px;
+    }
+
+    .footer-links a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent-color);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: background-color 0.2s;
+    }
+
+    .social-icon:hover {
+      background-color: var(--accent-color);
+    }
+
+    .copyright {
+      text-align: center;
+      padding-top: 30px;
+      margin-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #999;
+      font-size: 0.9rem;
+    }
+
+    /* Responsiveness */
+    @media (max-width: 1200px) {
+      .plans-container {
+        gap: 20px;
+      }
+      
+      .plan-card {
+        width: 280px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .plans-container {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .plan-card {
+        width: 100%;
+        max-width: 400px;
+      }
+      
+      .plan-card.popular {
+        transform: scale(1);
+      }
+      
+      .comparison-table {
+        font-size: 0.9rem;
+      }
+      
+      .footer-content {
+        gap: 30px;
+        justify-content: flex-start;
+      }
+      
+      .footer-column {
+        width: 200px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .nav-links {
+        display: none;
+      }
+      
+      .hero-title {
+        font-size: 2.2rem;
+      }
+      
+      .hero-subtitle {
+        font-size: 1.1rem;
+      }
+      
+      .comparison-section {
+        padding: 20px;
+        overflow-x: auto;
+      }
+      
+      .comparison-table {
+        min-width: 600px;
+      }
+      
+      .testimonial-container {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .testimonial-card {
+        width: 100%;
+      }
+      
+      .cta-title {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="left-section">
+      <h1>🎬 MovieHub</h1>
+    </div>
+    <div class="right-section">
+      <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#">Movies</a>
+        <a href="#">TV Shows</a>
+        <a href="#">New & Popular</a>
+      </div>
+      <button class="theme-toggle">🌞</button>
+      <div class="profile-icon">👤</div>
+      <button class="menu-toggle">☰</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <section class="hero-section">
+      <h1 class="hero-title">Choose Your Perfect Plan</h1>
+      <p class="hero-subtitle">Get unlimited access to thousands of movies and TV shows, with new content added every week. Cancel anytime. No commitment required.</p>
+    </section>
+
+    <section class="plans-container">
+      <!-- Basic Plan -->
+      <div class="plan-card basic">
+        <div class="plan-header">
+          <div class="plan-name">Basic</div>
+          <div class="plan-price">
+            <span class="currency">₹</span>149
+            <span class="period">/month</span>
+          </div>
+        </div>
+        <div class="plan-features">
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span class="feature-text">HD streaming (720p)</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span class="feature-text">Watch on 1 device at a time</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span class="feature-text">Access to all movies</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span class="feature-text">Limited TV shows library</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span class="feature-text">Ad-supported viewing</span>
+          </div>
+        </div>
+        <button class="plan-button">Start Basic Plan</button>
+      </div>
+
+      <!-- Standard Plan -->
+      <div class="plan-card standard popular">
+        <div class="popular-badge">POPULAR</div>
+        <div class="plan-header">
+          <div class="plan-name">Standard</div>
+          <div class="plan-price">
+            <span class="currency">₹</span>249
+            <span class="period">/month</span>
+          </div>
+        </div>
+        <div class="plan-features">
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span class="feature-text">Full HD streaming (1080p)</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span class="feature-text">Watch on 2 devices at a time</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span class="feature-text">Full access to movies & TV shows</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span class="feature-text">Ad-free viewing experience</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span class="feature-text">Offline downloads (10 titles)</span>
+          </div>
+        </div>
+        <button class="plan-button">Start Standard Plan</button>
+      </div>
+
+      <!-- Premium Plan -->
+      <div class="plan-card premium">
+        <div class="plan-header">
+          <div class="plan-name">Premium</div>
+          <div class="plan-price">
+            <span class="currency">₹</span>399
+            <span class="period">/month</span>
+          </div>
+        </div>
+        <div class="plan-features">
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span class="feature-text">4K Ultra HD streaming with HDR</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span class="feature-text">Watch on 4 devices at a time</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span class="feature-text">Full access with early releases</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span class="feature-text">Ad-free with premium audio</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span class="feature-text">Unlimited offline downloads</span>
+          </div>
+        </div>
+        <button class="plan-button">Start Premium Plan</button>
+      </div>
+    </section>
+
+    <section class="comparison-section">
+      <h2 class="comparison-title">Compare All Features</h2>
+      <div class="table-container">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Features</th>
+              <th class="basic-header">Basic</th>
+              <th class="standard-header">Standard</th>
+              <th class="premium-header">Premium</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Monthly Price</td>
+              <td>₹149</td>
+              <td>₹249</td>
+              <td>₹399</td>
+            </tr>
+            <tr>
+              <td>Video Quality</td>
+              <td>HD (720p)</td>
+              <td>Full HD (1080p)</td>
+              <td>4K + HDR</td>
+            </tr>
+            <tr>
+              <td>Simultaneous Streams</td>
+              <td>1</td>
+              <td>2</td>
+              <td>4</td>
+            </tr>
+            <tr>
+              <td>Ad-Free Experience</td>
+              <td><span class="no-icon">✕</span></td>
+              <td><span class="yes-icon">✓</span></td>
+              <td><span class="yes-icon">✓</span></td>
+            </tr>
+            <tr>
+              <td>Offline Downloads</td>
+              <td><span class="no-icon">✕</span></td>
+              <td>10 titles</td>
+              <td>Unlimited</td>
+            </tr>
+            <tr>
+              <td>New Movie Releases</td>
+              <td>Standard</td>
+              <td>Standard</td>
+              <td>Early Access</td>
+            </tr>
+            <tr>
+              <td>Premium Audio</td>
+              <td><span class="no-icon">✕</span></td>
+              <td><span class="no-icon">✕</span></td>
+              <td><span class="yes-icon">✓</span></td>
+            </tr>
+            <tr>
+              <td>Exclusive Content</td>
+              <td><span class="no-icon">✕</span></td>
+              <td>Limited</td>
+              <td>Full Access</td>
+            </tr>
+            <tr>
+              <td>Profile Accounts</td>
+              <td>1</td>
+              <td>3</td>
+              <td>5</td>
+            </tr>
+            <tr>
+              <td>Family Controls</td>
+              <td>Basic</td>
+              <td>Enhanced</td>
+              <td>Advanced</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="faq-section">
+      <h2 class="faq-title">Frequently Asked Questions</h2>
+      <div class="faq-container">
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>How do I cancel my subscription?</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>You can cancel your subscription at any time through your account settings. Your subscription will continue until the end of your current billing period, and you won't be charged again. There are no cancellation fees.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Can I switch between subscription plans?</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Yes, you can upgrade or downgrade your subscription at any time. If you upgrade, the new rate will be charged immediately and your benefits will be available right away. If you downgrade, the changes will take effect at the end of your current billing cycle.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>What payment methods do you accept?</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>We accept all major credit cards, debit cards, UPI, net banking, and popular mobile wallets. You can manage your payment methods in your account settings.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Can I share my account with family or friends?</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Yes, but the number of simultaneous streams allowed depends on your subscription plan. The Basic plan allows 1 stream, Standard allows 2 streams, and Premium allows 4 streams at the same time. Each plan also offers different numbers of profile accounts.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>How often do you add new content?</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>We add new movies and TV shows every week. Premium subscribers get early access to certain new releases before they're available to other subscription tiers.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="testimonials">
+      <h2 class="testimonial-title">What Our Subscribers Say</h2>
+      <div class="testimonial-container">
+        <div class="testimonial-card">
+          <span class="quote-icon">❝</span>
+          <p class="testimonial-text">The Premium plan has completely transformed my movie nights. The 4K quality and the ability to download movies for my travels is absolutely worth it!</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">RP</div>
+            <div class="author-info">
+              <div class="author-name">Rahul Patel</div>
+              <div class="author-title">Premium Member • 1 year</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <span class="quote-icon">❝</span>
+          <p class="testimonial-text">The Standard plan is perfect for me and my roommate. We can both watch different shows at the same time without any interruptions. Great selection of content too!</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">AS</div>
+            <div class="author-info">
+              <div class="author-name">Anjali Singh</div>
+              <div class="author-title">Standard Member • 8 months</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <span class="quote-icon">❝</span>
+          <p class="testimonial-text">I started with the Basic plan to check it out, but I'm already planning to upgrade to Standard. The movie selection is amazing and the app works perfectly on all my devices.</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">VK</div>
+            <div class="author-info">
+              <div class="author-name">Vikram Kumar</div>
+              <div class="author-title">Basic Member • 3 months</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <h2 class="cta-title">Start Watching Today</h2>
+      <p class="cta-subtitle">Join millions of viewers enjoying the best movies and TV shows anytime, anywhere. Start your free 7-day trial now!</p>
+      <button class="cta-button">Get Started</button>
+    </section>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-column">
+        <h3>MovieHub</h3>
+        <p>The ultimate destination for movie lovers with thousands of titles at your fingertips.</p>
+        <div class="social-links">
+          <a href="#" class="social-icon">f</a>
+          <a href="#" class="social-icon">in</a>
+          <a href="#" class="social-icon">𝕏</a>
+          <a href="#" class="social-icon">ig</a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h3>Company</h3>
+        <ul class="footer-links">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer
